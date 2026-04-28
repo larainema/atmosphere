@@ -1,0 +1,19 @@
+---
+features:
+  - |
+    Three Prometheus alerts have been added for catching network underlay
+    drift on compute hosts:
+
+    * ``GeneveTransmitErrors`` fires when a Geneve overlay device
+      (``genev_sys_*``) reports more than ~100 transmit errors per minute
+      sustained for 10 minutes. This is the canonical signal for an MTU
+      mismatch between the Geneve VTEP and the underlay bond.
+    * ``GeneveTransmitDrops`` fires on >10 transmit drops/s sustained for
+      10 minutes on the Geneve overlay device.
+    * ``NodeBondMTUInconsistent`` fires when a node's ``bond0`` MTU
+      differs from the median across the fleet, catching both initial
+      misprovisioning and post-reboot netplan drift.
+
+    These were authored after a 107-day undetected MTU mismatch on a
+    production compute host caused chronic Geneve packet drops and
+    customer-visible TLS handshake / live-migration latency.
